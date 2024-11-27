@@ -1,0 +1,46 @@
+# 编译输出目录
+/bin
+/obj
+
+# 项目构建文件
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+
+# 配置文件
+.env
+config/*.yml
+config/*.yaml
+
+# IDE相关文件
+.vscode/
+.idea/
+*.swp
+
+
+
+# 缓存和依赖下载
+/vendor/
+*.cache
+*.tmp
+
+# 临时文件
+*.out
+*.log
+*.pid
+
+# Docker相关文件
+docker-compose.override.yml
+.env.docker
+
+# 忽略文件上传目录
+/uploads
