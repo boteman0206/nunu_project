@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"gorm.io/driver/mysql"
 	"projectName/pkg/log"
+
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
@@ -18,12 +21,12 @@ func NewRepository(logger *log.Logger, db *gorm.DB) *Repository {
 		logger: logger,
 	}
 }
-func NewDb() *gorm.DB {
+func NewDb(conf *viper.Viper) *gorm.DB {
 	// TODO: init db
-	//db, err := gorm.Open(mysql.Open(conf.GetString("data.mysql.user")), &gorm.Config{})
-	//if err != nil {
-	//	panic(err)
-	//}
-	//return db
-	return &gorm.DB{}
+	db, err := gorm.Open(mysql.Open(conf.GetString("data.mysql.user")), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	return db
+
 }

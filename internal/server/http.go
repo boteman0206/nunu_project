@@ -11,6 +11,7 @@ import (
 func NewServerHTTP(
 	logger *log.Logger,
 	userHandler *handler.UserHandler,
+	loginHandler *handler.LoginHandler,
 ) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -22,7 +23,20 @@ func NewServerHTTP(
 			"say": "Hi Nunu!",
 		})
 	})
-	r.GET("/user", userHandler.GetUserById)
+
+	// 登陆登出
+	r.GET("/login", loginHandler.Login)
+	r.POST("/loginOut", loginHandler.LoginOut)
+
+	// 注册变更密码
+	r.POST("/register", loginHandler.LoginOut)
+	r.POST("/changePassword", loginHandler.LoginOut)
+
+	// 用户模块相关
+	userController := r.Group("/user")
+	userController.GET("/getUserById", userHandler.GetUserById)
+
+	// feed帖子相关
 
 	return r
 }

@@ -8,13 +8,13 @@ package wire
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
+	"github.com/spf13/viper"
 	"projectName/internal/handler"
 	"projectName/internal/repository"
 	"projectName/internal/server"
 	"projectName/internal/service"
 	"projectName/pkg/log"
-	"github.com/google/wire"
-	"github.com/spf13/viper"
 )
 
 // Injectors from wire.go:
@@ -22,12 +22,16 @@ import (
 func NewWire(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), error) {
 	handlerHandler := handler.NewHandler(logger)
 	serviceService := service.NewService(logger)
-	db := repository.NewDb()
+	db := repository.NewDb(viperViper)
 	repositoryRepository := repository.NewRepository(logger, db)
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	engine := server.NewServerHTTP(logger, userHandler)
+	
+	loginRepository := repository.NewLoginRepository(repositoryRepository)
+	loginService := service.NewLoginService(serviceService, loginRepository)
+	loginHandler := handler.NewLoginHandler(handlerHandler, loginService, userService)
+	engine := server.NewServerHTTP(logger, userHandler, loginHandler)
 	return engine, func() {
 	}, nil
 }
@@ -36,8 +40,8 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), 
 
 var ServerSet = wire.NewSet(server.NewServerHTTP)
 
-var RepositorySet = wire.NewSet(repository.NewDb, repository.NewRepository, repository.NewUserRepository)
+var RepositorySet = wire.NewSet(repository.NewDb, repository.NewRepository, repository.NewUserRepository, repository.NewLoginRepository)
 
-var ServiceSet = wire.NewSet(service.NewService, service.NewUserService)
+var ServiceSet = wire.NewSet(service.NewService, service.NewUserService, service.NewLoginService)
 
-var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler)
+var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler, handler.NewLoginHandler)
