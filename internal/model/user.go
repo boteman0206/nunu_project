@@ -5,7 +5,6 @@ type User struct {
 	CommonData
 	Username string `gorm:"column:username;not null"`
 	Password string `gorm:"column:password;not null"`
-	Email    string `gorm:"column:email;unique;not null"`
 }
 
 func (u *User) TableName() string {

@@ -11,7 +11,6 @@ import (
 func NewServerHTTP(
 	logger *log.Logger,
 	userHandler *handler.UserHandler,
-	loginHandler *handler.LoginHandler,
 ) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -25,12 +24,12 @@ func NewServerHTTP(
 	})
 
 	// 登陆登出
-	r.GET("/login", loginHandler.Login)
-	r.POST("/loginOut", loginHandler.LoginOut)
+	r.POST("/login", userHandler.Login)
+	r.POST("/loginOut", userHandler.Login)
 
 	// 注册变更密码
-	r.POST("/register", loginHandler.LoginOut)
-	r.POST("/changePassword", loginHandler.LoginOut)
+	r.POST("/register", userHandler.Register)
+	r.POST("/changePassword", userHandler.Login)
 
 	// 用户模块相关
 	userController := r.Group("/user")

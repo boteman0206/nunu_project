@@ -2,6 +2,8 @@ package handler
 
 import (
 	"net/http"
+	"projectName/internal/model"
+	"projectName/internal/model/params"
 	"projectName/internal/service"
 	"projectName/pkg/helper/resp"
 
@@ -42,5 +44,48 @@ func (h *UserHandler) GetUserById(ctx *gin.Context) {
 }
 
 func (h *UserHandler) UpdateUser(ctx *gin.Context) {
+	resp.HandleSuccess(ctx, nil)
+}
+
+// 登陆
+func (h *UserHandler) Login(ctx *gin.Context) {
+
+	params := params.LoginParams{}
+	if err := ctx.ShouldBind(&params); err != nil {
+		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
+		return
+	}
+
+	res, code, err := h.userService.Login(&params)
+	if err != nil {
+		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
+		return
+	}
+	if code > 0 {
+		resp.HandleError(ctx, http.StatusBadRequest, code, "", nil)
+		return
+	}
+
+	resp.HandleSuccess(ctx, res)
+}
+
+// 注册
+func (h *UserHandler) Register(ctx *gin.Context) {
+
+	params := params.RegisterParams{}
+	if err := ctx.ShouldBind(&params); err != nil {
+		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
+		return
+	}
+
+	code, err := h.userService.Register(&params)
+	if err != nil {
+		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
+		return
+	}
+	if code > 0 {
+		resp.HandleError(ctx, http.StatusBadRequest, code, "", nil)
+		return
+	}
 	resp.HandleSuccess(ctx, nil)
 }
