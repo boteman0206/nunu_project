@@ -16,8 +16,9 @@ type LoginOutParams struct {
 
 // 注册的参数
 type RegisterParams struct {
-	Username string `form:"username" bindinging:"required"`
-	Password string `form:"password" binding:"required"`
+	Username    string `form:"username" bindinging:"required"`
+	Password    string `form:"password" binding:"required"`
+	PortraitUrl string `form:"portrait_url"`
 }
 
 // 变更密码的参数

@@ -56,14 +56,15 @@ func (s *userService) Register(params *params.RegisterParams) (int, error) {
 	}
 	// 判断用户名是否已经存在
 	if user.ID > 0 {
-		return model.CodeUserNameNotExist, nil
+		return model.CodeUserNameALreadyExist, nil
 	}
 	// todo 加密密码处理
 	// 账号的特殊字符和密码的特殊字符校验 长度校验等
 
 	data := &model.User{
-		Username: params.Username,
-		Password: params.Password,
+		Username:    params.Username,
+		Password:    params.Password,
+		PortraitUrl: params.PortraitUrl,
 	}
 	err = s.userRepository.CreateUser(data)
 	if err != nil {
