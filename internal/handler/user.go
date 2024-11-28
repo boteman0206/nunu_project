@@ -43,10 +43,6 @@ func (h *UserHandler) GetUserById(ctx *gin.Context) {
 	resp.HandleSuccess(ctx, user)
 }
 
-func (h *UserHandler) UpdateUser(ctx *gin.Context) {
-	resp.HandleSuccess(ctx, nil)
-}
-
 // 登陆
 func (h *UserHandler) Login(ctx *gin.Context) {
 
@@ -69,6 +65,22 @@ func (h *UserHandler) Login(ctx *gin.Context) {
 	resp.HandleSuccess(ctx, res)
 }
 
+func (h *UserHandler) LoginOut(ctx *gin.Context) {
+
+	params := params.LoginOutParams{}
+	if err := ctx.ShouldBind(&params); err != nil {
+		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
+		return
+	}
+
+	err := h.userService.LoginOut(&params)
+	if err != nil {
+		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
+		return
+	}
+	resp.HandleSuccess(ctx, "")
+}
+
 // 注册
 func (h *UserHandler) Register(ctx *gin.Context) {
 
@@ -79,6 +91,26 @@ func (h *UserHandler) Register(ctx *gin.Context) {
 	}
 
 	code, err := h.userService.Register(&params)
+	if err != nil {
+		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
+		return
+	}
+	if code > 0 {
+		resp.HandleError(ctx, http.StatusBadRequest, code, "", nil)
+		return
+	}
+	resp.HandleSuccess(ctx, nil)
+}
+
+func (h *UserHandler) UpdateUser(ctx *gin.Context) {
+
+	params := params.UpdateParams{}
+	if err := ctx.ShouldBind(&params); err != nil {
+		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
+		return
+	}
+
+	code, err := h.userService.UpdateUser(&params)
 	if err != nil {
 		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
 		return

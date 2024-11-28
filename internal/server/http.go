@@ -1,11 +1,12 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
 	"projectName/internal/handler"
 	"projectName/internal/middleware"
 	"projectName/pkg/helper/resp"
 	"projectName/pkg/log"
+
+	"github.com/gin-gonic/gin"
 )
 
 func NewServerHTTP(
@@ -22,14 +23,17 @@ func NewServerHTTP(
 			"say": "Hi Nunu!",
 		})
 	})
+	r.GET("/ping", func(ctx *gin.Context) {
+		resp.HandleSuccess(ctx, "successful")
+	})
 
 	// 登陆登出
 	r.POST("/login", userHandler.Login)
-	r.POST("/loginOut", userHandler.Login)
+	r.POST("/loginOut", userHandler.LoginOut)
 
 	// 注册变更密码
 	r.POST("/register", userHandler.Register)
-	r.POST("/changePassword", userHandler.Login)
+	r.POST("/updateUser", userHandler.UpdateUser)
 
 	// 用户模块相关
 	userController := r.Group("/user")
