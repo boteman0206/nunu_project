@@ -37,9 +37,12 @@ func NewServerHTTP(
 
 	// 用户模块相关
 	userController := r.Group("/user")
-	userController.GET("/getUserById", userHandler.GetUserById)
+	userController.GET("/userInfoCenter", userHandler.UserInfoCenter)
+	userController.POST("/updateUserInfo", userHandler.UpdateUserInfo)
 
 	// feed帖子相关
+	// feedController := r.Group("/feed")
+	// feedController.GET("/newFeedList", )
 
 	return r
 }

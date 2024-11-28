@@ -15,12 +15,13 @@ import (
 )
 
 type UserService interface {
-	GetUserById(id int64) (*model.User, error)
-	GetUserByName(name string) (*model.User, error)
 	Register(params *params.RegisterParams) (int, error)
 	Login(params *params.LoginParams) (response.LoginResponse, int, error)
 	LoginOut(params *params.LoginOutParams) error
 	ChangePassword(params *params.ChangeParams) (int, error)
+
+	GetUserById(id int64) (*model.User, error)
+	GetUserByName(name string) (*model.User, error)
 }
 
 type userService struct {

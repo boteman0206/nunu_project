@@ -25,24 +25,6 @@ type UserHandler struct {
 	userService service.UserService
 }
 
-func (h *UserHandler) GetUserById(ctx *gin.Context) {
-	var params struct {
-		Id int64 `form:"id" binding:"required"`
-	}
-	if err := ctx.ShouldBind(&params); err != nil {
-		resp.HandleError(ctx, http.StatusBadRequest, 1, err.Error(), nil)
-		return
-	}
-
-	user, err := h.userService.GetUserById(params.Id)
-	h.logger.Info("GetUserByID", zap.Any("user", user))
-	if err != nil {
-		resp.HandleError(ctx, http.StatusInternalServerError, 1, err.Error(), nil)
-		return
-	}
-	resp.HandleSuccess(ctx, user)
-}
-
 // 登陆
 func (h *UserHandler) Login(ctx *gin.Context) {
 
@@ -51,7 +33,7 @@ func (h *UserHandler) Login(ctx *gin.Context) {
 		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
 		return
 	}
-
+	h.logger.Info("Login", zap.Any("params", params))
 	res, code, err := h.userService.Login(&params)
 	if err != nil {
 		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
@@ -72,7 +54,7 @@ func (h *UserHandler) LoginOut(ctx *gin.Context) {
 		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
 		return
 	}
-
+	h.logger.Info("LoginOut", zap.Any("params", params))
 	err := h.userService.LoginOut(&params)
 	if err != nil {
 		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
@@ -90,6 +72,7 @@ func (h *UserHandler) Register(ctx *gin.Context) {
 		return
 	}
 
+	h.logger.Info("Register", zap.Any("params", params))
 	code, err := h.userService.Register(&params)
 	if err != nil {
 		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
@@ -110,6 +93,7 @@ func (h *UserHandler) ChangePassword(ctx *gin.Context) {
 		return
 	}
 
+	h.logger.Info("ChangePassword", zap.Any("params", params))
 	code, err := h.userService.ChangePassword(&params)
 	if err != nil {
 		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
@@ -119,5 +103,31 @@ func (h *UserHandler) ChangePassword(ctx *gin.Context) {
 		resp.HandleError(ctx, http.StatusBadRequest, code, "", nil)
 		return
 	}
+	resp.HandleSuccess(ctx, nil)
+}
+
+// 个人中心
+func (h *UserHandler) UserInfoCenter(ctx *gin.Context) {
+
+	params := params.CommonParam{}
+	if err := ctx.ShouldBind(&params); err != nil {
+		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
+		return
+	}
+
+	// h.userService.UserInfoCenter(params)
+
+	resp.HandleSuccess(ctx, nil)
+}
+
+// 更新用户信息
+func (h *UserHandler) UpdateUserInfo(ctx *gin.Context) {
+
+	params := params.CommonParam{}
+	if err := ctx.ShouldBind(&params); err != nil {
+		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
+		return
+	}
+
 	resp.HandleSuccess(ctx, nil)
 }

@@ -19,6 +19,7 @@ var ServerSet = wire.NewSet(server.NewServerHTTP)
 
 var RepositorySet = wire.NewSet(
 	repository.NewDb,
+	repository.NewRedisDb,
 	repository.NewRepository,
 	repository.NewUserRepository,
 )

@@ -23,12 +23,11 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), 
 	handlerHandler := handler.NewHandler(logger)
 	serviceService := service.NewService(logger)
 	db := repository.NewDb(viperViper)
-	redisDb := repository.NewRedisDb(viperViper)
-	repositoryRepository := repository.NewRepository(logger, db,redisDb)
+	client := repository.NewRedisDb(viperViper)
+	repositoryRepository := repository.NewRepository(logger, db, client)
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	
 	engine := server.NewServerHTTP(logger, userHandler)
 	return engine, func() {
 	}, nil
@@ -38,8 +37,8 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), 
 
 var ServerSet = wire.NewSet(server.NewServerHTTP)
 
-var RepositorySet = wire.NewSet(repository.NewDb, repository.NewRepository, repository.NewUserRepository)
+var RepositorySet = wire.NewSet(repository.NewDb, repository.NewRedisDb, repository.NewRepository, repository.NewUserRepository)
 
-var ServiceSet = wire.NewSet(service.NewService, service.NewUserService,)
+var ServiceSet = wire.NewSet(service.NewService, service.NewUserService)
 
 var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler)
