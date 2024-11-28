@@ -20,7 +20,7 @@ type UserService interface {
 	Register(params *params.RegisterParams) (int, error)
 	Login(params *params.LoginParams) (response.LoginResponse, int, error)
 	LoginOut(params *params.LoginOutParams) error
-	UpdateUser(params *params.UpdateParams) (int, error)
+	ChangePassword(params *params.ChangeParams) (int, error)
 }
 
 type userService struct {
@@ -129,12 +129,12 @@ func (s *userService) LoginOut(params *params.LoginOutParams) error {
 }
 
 // UpdateUser implements UserService.
-func (s *userService) UpdateUser(params *params.UpdateParams) (int, error) {
+func (s *userService) ChangePassword(params *params.ChangeParams) (int, error) {
 
 	res := &model.User{}
 	exist, err := s.userRepository.GetData(params.Token, res)
 	if err != nil {
-		s.logger.Error("GetData", zap.Any("err", err))
+		s.logger.Error("ChangePassword", zap.Any("err", err))
 		return 0, err
 	}
 
@@ -150,9 +150,10 @@ func (s *userService) UpdateUser(params *params.UpdateParams) (int, error) {
 	data := map[string]interface{}{
 		"password": params.NewPassword,
 	}
+
 	row, err := s.userRepository.UpdateUserByID(res.ID, data)
 	if err != nil {
-		s.logger.Error("UpdateUserByID", zap.Any("err", err))
+		s.logger.Error("ChangePassword", zap.Any("err", err))
 		return 0, err
 	}
 	if row != 1 {

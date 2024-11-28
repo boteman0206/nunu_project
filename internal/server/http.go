@@ -33,7 +33,7 @@ func NewServerHTTP(
 
 	// 注册变更密码
 	r.POST("/register", userHandler.Register)
-	r.POST("/updateUser", userHandler.UpdateUser)
+	r.POST("/changePassword", userHandler.ChangePassword)
 
 	// 用户模块相关
 	userController := r.Group("/user")

@@ -21,7 +21,7 @@ type RegisterParams struct {
 }
 
 // 变更密码的参数
-type UpdateParams struct {
+type ChangeParams struct {
 	CommonParam
 	Username    string `form:"username" binding:"required"`
 	OldPassword string `form:"old_password" binding:"required"`

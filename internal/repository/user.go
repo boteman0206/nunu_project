@@ -105,6 +105,8 @@ func (r *userRepository) GetData(key string, data interface{}) (bool, error) {
 
 // UpdateUserByID implements UserRepository.
 func (r *userRepository) UpdateUserByID(id int64, data map[string]interface{}) (int64, error) {
+
+	data["updated_at"] = time.Now().Unix()
 	result := r.Repository.db.Model(&model.User{}).Where("id = ?", id).Updates(data)
 	return result.RowsAffected, result.Error
 }

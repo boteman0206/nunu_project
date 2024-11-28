@@ -102,15 +102,15 @@ func (h *UserHandler) Register(ctx *gin.Context) {
 	resp.HandleSuccess(ctx, nil)
 }
 
-func (h *UserHandler) UpdateUser(ctx *gin.Context) {
+func (h *UserHandler) ChangePassword(ctx *gin.Context) {
 
-	params := params.UpdateParams{}
+	params := params.ChangeParams{}
 	if err := ctx.ShouldBind(&params); err != nil {
 		resp.HandleError(ctx, http.StatusBadRequest, model.CodeParamErr, "", nil)
 		return
 	}
 
-	code, err := h.userService.UpdateUser(&params)
+	code, err := h.userService.ChangePassword(&params)
 	if err != nil {
 		resp.HandleError(ctx, http.StatusInternalServerError, model.CodeNetError, "", nil)
 		return
