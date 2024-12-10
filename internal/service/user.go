@@ -22,6 +22,7 @@ type UserService interface {
 
 	GetUserById(id int64) (*model.User, error)
 	GetUserByName(name string) (*model.User, error)
+	GetUserIDByToken(token string) (*model.User, int, error)
 }
 
 type userService struct {
@@ -43,6 +44,21 @@ func (s *userService) GetUserById(id int64) (*model.User, error) {
 // GetUserByName implements UserService.
 func (s *userService) GetUserByName(name string) (*model.User, error) {
 	return s.userRepository.FirstByName(name)
+}
+
+func (s *userService) GetUserIDByToken(token string) (*model.User, int, error) {
+
+	res := &model.User{}
+	exist, err := s.userRepository.GetData(token, res)
+	if err != nil {
+		s.logger.Error("ChangePassword", zap.Any("err", err))
+		return res, 0, err
+	}
+
+	if !exist || res.ID <= 0 {
+		return res, model.TokenExpErr, nil
+	}
+	return res, 0, nil
 }
 
 // CreateUser implements UserService.

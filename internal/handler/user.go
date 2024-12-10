@@ -115,9 +115,18 @@ func (h *UserHandler) UserInfoCenter(ctx *gin.Context) {
 		return
 	}
 
-	// h.userService.UserInfoCenter(params)
+	data, code, err := h.userService.GetUserIDByToken(params.Token)
+	if err != nil {
+		h.logger.Error("UserInfoCenter", zap.Any("params", params))
+		resp.HandleError(ctx, http.StatusBadRequest, code, "", nil)
+		return
+	}
+	if code > 0 {
+		resp.HandleError(ctx, http.StatusBadRequest, code, "", nil)
+		return
+	}
 
-	resp.HandleSuccess(ctx, nil)
+	resp.HandleSuccess(ctx, data)
 }
 
 // 更新用户信息
