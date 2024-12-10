@@ -3,6 +3,7 @@ package server
 import (
 	"projectName/internal/handler"
 	"projectName/internal/middleware"
+	"projectName/internal/repository"
 	"projectName/pkg/helper/resp"
 	"projectName/pkg/log"
 
@@ -11,6 +12,7 @@ import (
 
 func NewServerHTTP(
 	logger *log.Logger,
+	repository *repository.Repository,
 	userHandler *handler.UserHandler,
 	feedHchander *handler.FeedHandler,
 ) *gin.Engine {
@@ -30,10 +32,14 @@ func NewServerHTTP(
 
 	// 登陆登出
 	r.POST("/login", userHandler.Login)
-	r.POST("/loginOut", userHandler.LoginOut)
-
 	// 注册变更密码
 	r.POST("/register", userHandler.Register)
+
+	// 用户登陆验证
+	r.Use(middleware.TokenMiddleware(repository))
+
+	r.POST("/loginOut", userHandler.LoginOut)
+
 	r.POST("/changePassword", userHandler.ChangePassword)
 
 	// 用户模块相关

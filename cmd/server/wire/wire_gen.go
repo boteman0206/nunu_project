@@ -26,15 +26,15 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), 
 	client := repository.NewRedisDb(viperViper)
 	repositoryRepository := repository.NewRepository(logger, db, client)
 	userRepository := repository.NewUserRepository(repositoryRepository)
-	userService := service.NewUserService(serviceService, userRepository)
+	userService := service.NewUserService(serviceService, repositoryRepository, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
 
 	feedRepository := repository.NewFeedRepository(repositoryRepository)
-	feedService := service.NewFeedService(serviceService, feedRepository)
+	feedService := service.NewFeedService(serviceService, repositoryRepository, feedRepository)
 	feedHandler := handler.NewFeedHandler(handlerHandler, feedService)
 
 
-	engine := server.NewServerHTTP(logger, userHandler,feedHandler)
+	engine := server.NewServerHTTP(logger,repositoryRepository, userHandler,feedHandler)
 	return engine, func() {
 	}, nil
 }

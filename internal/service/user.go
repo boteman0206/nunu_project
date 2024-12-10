@@ -28,12 +28,14 @@ type UserService interface {
 type userService struct {
 	*Service
 	userRepository repository.UserRepository
+	repository     *repository.Repository
 }
 
-func NewUserService(service *Service, userRepository repository.UserRepository) UserService {
+func NewUserService(service *Service, repository *repository.Repository, userRepository repository.UserRepository) UserService {
 	return &userService{
 		Service:        service,
 		userRepository: userRepository,
+		repository:     repository,
 	}
 }
 
@@ -49,7 +51,7 @@ func (s *userService) GetUserByName(name string) (*model.User, error) {
 func (s *userService) GetUserIDByToken(token string) (*model.User, int, error) {
 
 	res := &model.User{}
-	exist, err := s.userRepository.GetData(token, res)
+	exist, err := s.repository.GetData(token, res)
 	if err != nil {
 		s.logger.Error("ChangePassword", zap.Any("err", err))
 		return res, 0, err
@@ -126,7 +128,7 @@ func (s *userService) Login(params *params.LoginParams) (response.LoginResponse,
 		return res, 0, err
 	}
 
-	err = s.userRepository.SetData(token, string(userBytes), model.TokenExp)
+	err = s.repository.SetData(token, string(userBytes), model.TokenExp)
 	if err != nil {
 		s.logger.Error("SetLoginToken", zap.Any("err", err))
 		return res, 0, err
@@ -138,7 +140,7 @@ func (s *userService) Login(params *params.LoginParams) (response.LoginResponse,
 // LoginOut implements UserService.
 func (s *userService) LoginOut(params *params.LoginOutParams) error {
 
-	err := s.userRepository.DelData([]string{params.Token})
+	err := s.repository.DelData([]string{params.Token})
 	if err != nil {
 		s.logger.Error("LoginOut", zap.Any("err", err))
 		return err
@@ -150,7 +152,7 @@ func (s *userService) LoginOut(params *params.LoginOutParams) error {
 func (s *userService) ChangePassword(params *params.ChangeParams) (int, error) {
 
 	res := &model.User{}
-	exist, err := s.userRepository.GetData(params.Token, res)
+	exist, err := s.repository.GetData(params.Token, res)
 	if err != nil {
 		s.logger.Error("ChangePassword", zap.Any("err", err))
 		return 0, err

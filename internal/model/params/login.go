@@ -28,3 +28,15 @@ type ChangeParams struct {
 	OldPassword string `form:"old_password" binding:"required"`
 	NewPassword string `form:"new_password" binding:"required"`
 }
+
+type GetFeeInfoParams struct {
+	FeedID int64 `form:"feed_id" binding:"required"`
+}
+
+type CreateFeedParams struct {
+	CommonParam
+	Title       string `json:"title" `
+	Tags        string `json:"tags"`
+	Description string `json:"description" binding:"required"`
+	ImageList   string `json:"image_list"`
+}
