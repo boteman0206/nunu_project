@@ -1,7 +1,7 @@
 package repository
 
 import (
-    "context"
+	"context"
 	"projectName/internal/model"
 )
 

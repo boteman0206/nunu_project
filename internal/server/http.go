@@ -12,6 +12,7 @@ import (
 func NewServerHTTP(
 	logger *log.Logger,
 	userHandler *handler.UserHandler,
+	feedHchander *handler.FeedHandler,
 ) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -41,8 +42,10 @@ func NewServerHTTP(
 	userController.POST("/updateUserInfo", userHandler.UpdateUserInfo)
 
 	// feed帖子相关
-	// feedController := r.Group("/feed")
-	// feedController.GET("/newFeedList", )
+
+	feedController := r.Group("/feed")
+	feedController.GET("/feedInfo", feedHchander.GetFeed)
+	feedController.POST("/createFeed", feedHchander.CreateFeed)
 
 	return r
 }

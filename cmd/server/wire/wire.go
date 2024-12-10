@@ -22,16 +22,19 @@ var RepositorySet = wire.NewSet(
 	repository.NewRedisDb,
 	repository.NewRepository,
 	repository.NewUserRepository,
+	repository.NewFeedRepository,
 )
 
 var ServiceSet = wire.NewSet(
 	service.NewService,
 	service.NewUserService,
+	service.NewFeedService,
 )
 
 var HandlerSet = wire.NewSet(
 	handler.NewHandler,
 	handler.NewUserHandler,
+	handler.NewFeedHandler,
 )
 
 func NewWire(*viper.Viper, *log.Logger) (*gin.Engine, func(), error) {

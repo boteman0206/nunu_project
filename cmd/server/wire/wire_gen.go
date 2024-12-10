@@ -28,7 +28,13 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), 
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	engine := server.NewServerHTTP(logger, userHandler)
+
+	feedRepository := repository.NewFeedRepository(repositoryRepository)
+	feedService := service.NewFeedService(serviceService, feedRepository)
+	feedHandler := handler.NewFeedHandler(handlerHandler, feedService)
+
+
+	engine := server.NewServerHTTP(logger, userHandler,feedHandler)
 	return engine, func() {
 	}, nil
 }
@@ -37,8 +43,8 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*gin.Engine, func(), 
 
 var ServerSet = wire.NewSet(server.NewServerHTTP)
 
-var RepositorySet = wire.NewSet(repository.NewDb, repository.NewRedisDb, repository.NewRepository, repository.NewUserRepository)
+var RepositorySet = wire.NewSet(repository.NewDb, repository.NewRedisDb, repository.NewRepository, repository.NewUserRepository, repository.NewFeedRepository)
 
-var ServiceSet = wire.NewSet(service.NewService, service.NewUserService)
+var ServiceSet = wire.NewSet(service.NewService, service.NewUserService, service.NewFeedService)
 
-var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler)
+var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler, handler.NewFeedHandler)
